@@ -83,6 +83,14 @@ namespace DBPROJECT
         {
             UserProfilefrm.Dispose();
         }
+
+        private void usersToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Userfrm = new frmUser(Globals.gIdUser, Globals.gLoginName);
+            frmUser.FormClosed += Userfrm_FormClosed;
+            frmUser.MdiParent = this;
+            frmUser.Show();
+        }
     }
 }
     
