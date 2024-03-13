@@ -59,9 +59,72 @@ namespace DBPROJECT
             this.dgvMain.Columns["active"].HeaderText = "Active";
             this.dgvMain.Columns["email"].HeaderText = "Email";
             this.dgvMain.Columns["smtphost"].HeaderText = "SMPT Host";
-            this.dgvMain.Columns["smptport"].HeaderText = "SMPT Port";
+            this.dgvMain.Columns["smtpport"].HeaderText = "SMPT Port";
             this.dgvMain.Columns["gender"].HeaderText = "Gender";
             this.dgvMain.Columns["birthdate"].HeaderText = "Birthday";
+
+            this.dgvMain.BackgroundColor = Globals.gGridOddRowColor;
+            this.dgvMain.AlternatingRowsDefaultCellStyle.BackColor = Globals.gGridEvenRowColor;
+
+
+            this.dgvMain.EnableHeadersVisualStyles = false;
+            this.dgvMain.ColumnHeadersDefaultCellStyle.BackColor = Globals.gGridHeaderColor;
+        }
+
+        private void dgvMain_RowPostPaint(object sender, DataGridViewRowPostPaintEventArgs e)
+        {
+            using (SolidBrush b = new SolidBrush(((DataGridView)sender).RowHeadersDefaultCellStyle.ForeColor))
+
+            {
+
+                e.Graphics.DrawString(
+
+                    String.Format("{0,10}", (e.RowIndex + 1).ToString()),
+
+                    e.InheritedRowStyle.Font, b, e.RowBounds.Location.X + 10, e.RowBounds.Location.Y + 4);
+
+            }
+        }
+
+        private void dgvMain_RowPrePaint(object sender, DataGridViewRowPrePaintEventArgs e)
+        {
+            int firstDisplayedCellIndex = dgvMain.FirstDisplayedCell.RowIndex;
+
+            int lastDisplayedCellIndex = firstDisplayedCellIndex + dgvMain.DisplayedRowCount(true);
+
+
+
+            Graphics Graphics = dgvMain.CreateGraphics();
+
+            int measureFirstDisplayed = (int)(Graphics.MeasureString(firstDisplayedCellIndex.ToString(), dgvMain.Font).Width);
+
+            int measureLastDisplayed = (int)(Graphics.MeasureString(lastDisplayedCellIndex.ToString(), dgvMain.Font).Width);
+
+
+
+            int rowHeaderWitdh = System.Math.Max(measureFirstDisplayed, measureLastDisplayed);
+
+            dgvMain.RowHeadersWidth = rowHeaderWitdh + 40;
+        }
+
+        private void dgvMain_UserDeletingRow(object sender, DataGridViewRowCancelEventArgs e)
+        {
+            int row;
+
+            row = this.dgvMain.SelectedRows[0].Index + 1;
+
+            if (csMessageBox.Show("Delete Row # " + row.ToString(), "Please confirm", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+
+            {
+
+                if (this.dgvMain.SelectedRows.Count > 0)
+
+                    e.Cancel = false;
+
+                else e.Cancel = true;
+
+            }
+            else e.Cancel = true;
         }
     }
 }
